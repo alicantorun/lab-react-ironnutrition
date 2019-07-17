@@ -8,7 +8,8 @@ import FoodSearch from "./FoodSearch";
 
 class App extends Component {
   state = {
-    foods: JSONfoods
+    foods: JSONfoods,
+    search: ""
   };
 
   pushFood = food => {
@@ -17,15 +18,28 @@ class App extends Component {
     this.setState({ foods: foods });
   };
 
+  foodFilter = value => {
+    console.log(value);
+    let filteredFoods = [...this.state.foods];
+    filteredFoods = filteredFoods.filter(food => {
+      return food.name.includes(value);
+    });
+
+    this.setState({ search: value });
+    // this.setState({ foods: filteredFoods });
+  };
+
   render() {
     console.log(this.state.foods);
-    const elements = this.state.foods.map((food, index) => {
-      return <FoodBox key={index} data={food} />;
-    });
+    const elements = this.state.foods
+      .filter(el => el.name.includes(this.state.search))
+      .map((food, index) => {
+        return <FoodBox key={index} data={food} />;
+      });
 
     return (
       <div className="App">
-        <FoodSearch />
+        <FoodSearch foodFilter={this.foodFilter} />
         <FoodForm pushFood={this.pushFood} />
         {elements}
       </div>
